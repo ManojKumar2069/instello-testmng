@@ -4,7 +4,8 @@ import type {
 } from "#academicTests/validators";
 import { test } from "#test.setup";
 import { api } from "#_generated/api";
-
+import { addAssessmentComponent } from "#academicTests/mutations";
+import { ConvexError } from "convex/values";
 describe("academicTests.createAssessmentSchema", () => {
   const mockAssessmentSchema: InsertAssessmentSchemaValidator = {
     name: "CIE1",
@@ -37,12 +38,12 @@ describe("academicTests.addAssessmentComponent", () => {
         totalAllotedMarks: 20,
       },
       {
-        name: "Observation",
+        name: "Written Test1",
         passingMarks: 5,
         totalAllotedMarks: 10,
       },
       {
-        name: "Mini Project",
+        name: "Written Test2",
         passingMarks: 8,
         totalAllotedMarks: 16,
       },
@@ -74,4 +75,44 @@ describe("academicTests.addAssessmentComponent", () => {
       mockAssessmentComponents.map((mac, orderIdx) => ({ ...mac, orderIdx })),
     );
   });
+test("should not allow user to create component with the same name", async ({ t }) => {
+  const assessmentSchemaId = await t.run((c) =>
+    c.db.insert("assessmentSchemas", {
+      ...mockAssessmentSchema,
+      createdAt: Date.now(),
+    }),
+  );
+
+  // Insert all components
+  for (const component of mockAssessmentComponents) {
+    await t.mutation(api.academicTests.mutations.addAssessmentComponent, {
+      body: component,
+      assessmentSchemaId,
+    });
+  }
+  // Store the initial value
+  const upperCaseName = mockAssessmentComponents[0].name.toUpperCase();
+
+  const upperCaseAssessmentComponent = t.mutation(api.academicTests.mutations.addAssessmentComponent,{
+    body:{
+      name:upperCaseName,
+      passingMarks:5,
+      totalAllotedMarks:10
+      },
+      assessmentSchemaId
+  })
+  await expect (upperCaseAssessmentComponent).rejects.toMatchObject({data:"Component with this name alredy exists"})
+
+  const lowerCaseName = mockAssessmentComponents[0].name.toUpperCase();
+
+  const lowerCaseAssessmentComponent = t.mutation(api.academicTests.mutations.addAssessmentComponent,{
+    body:{
+      name:lowerCaseName,
+      passingMarks:5,
+      totalAllotedMarks:10
+      },
+      assessmentSchemaId
+  })
+  await expect (lowerCaseAssessmentComponent).rejects.toMatchObject({data:"Component with this name alredy exists"})
+});
 });

@@ -55,3 +55,15 @@ export const updateAssessmentComponent = mutation({
     await AssessmentComponent.update(ctx.db, args.id, args.body);
   },
 });
+
+export const deleteAssessmentComponent = mutation({
+  args :{id:v.id("assessmentComponents")},
+  handler: async(ctx , args)=>
+  {
+    const isAvaliable = await ctx.db.get(args.id)
+    if(!isAvaliable)
+      throw new ConvexError("AssessmentComponent Not Available");
+    await AssessmentComponent.remove(ctx.db,args.id)
+    return true;
+  }
+})

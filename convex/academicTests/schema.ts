@@ -11,6 +11,7 @@ export const academicTestsTables = {
 
   assessmentComponents: defineTable({
     name: v.string(),
+    normalizedName: v.string(),
     totalAllotedMarks: v.number(),
     passingMarks: v.number(),
     orderIdx: v.number(),
@@ -19,5 +20,6 @@ export const academicTestsTables = {
     updatedAt: v.optional(v.number()),
   }).index("by_assessmentSchema_orderIdx", {
     fields: ["assessmentSchemaId", "orderIdx"],
-  }),
+  }).index("by_normalizedName",["normalizedName"],
+  ),
 };
