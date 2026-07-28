@@ -2,19 +2,16 @@ import { ConvexError } from "convex/values";
 import { Doc, Id } from "#_generated/dataModel";
 import { DbWriter, DbReader } from "#helpers/types";
 
-/** Create assessment schema*/
+
+/** Create assessment schema */
 export async function create(
   db: DbWriter,
   body: Pick<Doc<"assessmentSchemas">, "name" | "description">,
 ) {
-  try {
-    return await db.insert("assessmentSchemas", {
-      ...body,
-      createdAt: Date.now(),
-    });
-  } catch (e) {
-    throw new ConvexError("Unable to create assessment schema");
-  }
+  return await db.insert("assessmentSchemas", {
+    ...body,
+    createdAt: Date.now(),
+  });
 }
 
 /** Find assessment record or returns null */
