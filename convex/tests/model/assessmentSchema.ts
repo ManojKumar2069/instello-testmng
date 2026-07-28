@@ -2,8 +2,7 @@ import { ConvexError } from "convex/values";
 import { Doc, Id } from "#_generated/dataModel";
 import { DbWriter, DbReader } from "#helpers/types";
 
-/** Create assessment schema
- * @throws an error if unable to create one*/
+/** Create assessment schema*/
 export async function create(
   db: DbWriter,
   body: Pick<Doc<"assessmentSchemas">, "name" | "description">,
