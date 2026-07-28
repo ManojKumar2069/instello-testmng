@@ -1,6 +1,6 @@
 import { defineSchema } from "convex/server";
-import { testsTables } from "./tests/schema";
+import { academicTestsTables } from "./academicTests/schema";
 
 export default defineSchema({
-  ...testsTables,
+  ...academicTestsTables,
 });
